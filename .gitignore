@@ -1,3 +1,6 @@
 bridge/.idea/
 bridge/venv/
-bridge/microcontroller/__pycache__/
+bridge/microcontroller/__pycache__/*
+bridge/database/__pycache__/*
+bridge/tools/__pycache__/*
+bridge/model/__pycache__/*
