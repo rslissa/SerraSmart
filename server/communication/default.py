@@ -1,0 +1,1 @@
+PASSWORD = b'8*uM(s36URqoku|'   #salt per calcolo digest
