@@ -1,4 +1,9 @@
+from datetime import datetime
+
 from model.acquisition import Acquisition
+
+ACQUISITION_POINT = "1"
+
 
 class Thresholds:
     # Arduino analog pin range 0-1023
@@ -70,4 +75,4 @@ class Caster:
                    (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.AHmin
         else:
             _AH = None
-        return Acquisition(_EC, _WF, _GT, _GH, _AT, _AH)
+        return Acquisition(datetime.now(), ACQUISITION_POINT, _EC, _WF, _GT, _GH, _AT, _AH)

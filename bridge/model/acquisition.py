@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class SensorValues:
     def __init__(self):
         self.s0 = None
@@ -41,7 +44,10 @@ class SensorValues:
 
 
 class Acquisition:
-    def __init__(self, ec, wf, gt, gh, at, ah):
+    def __init__(self, id, datetime, acquisition_point, ec, wf, gt, gh, at, ah):
+        self.id = id
+        self.datetime = datetime
+        self.acquisition_point = acquisition_point
         self.EC = ec  # Electric Conductivity
         self.WF = wf  # Water Flow
         self.GT = gt  # Ground Temperature
@@ -50,6 +56,20 @@ class Acquisition:
         self.AH = ah  # Air Humidity
 
     def tostring(self):
+        if isinstance(self.id, int):
+            print("id: %i" % self.id)
+        else:
+            print("id is none")
+        if isinstance(self.datetime, datetime):
+            print("datetime: %s" % self.datetime)
+        else:
+            if self.datetime is None:
+                print("datetime is none")
+        if isinstance(self.acquisition_point, str):
+            print("acquisition point: %s" % self.acquisition_point)
+        else:
+            if self.acquisition_point is None:
+                print("acquisition point is none")
         if isinstance(self.EC, float):
             print("EC: %f" % self.EC)
         else:

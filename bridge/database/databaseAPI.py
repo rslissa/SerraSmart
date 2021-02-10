@@ -1,6 +1,8 @@
 #!/usr/bin/python
+import json
+
+import jsonpickle
 import psycopg2
-from datetime import datetime
 from database.configuration import config
 from model.acquisition import Acquisition
 
@@ -45,19 +47,21 @@ class DatabaseAPI:
         try:
             sql = """INSERT INTO public.acquisition(
                                     datetime, 
+                                    acquisition_point,
                                     ec, 
                                     water_flow, 
                                     ground_temperature, 
                                     ground_humidity, 
                                     air_temperature, 
                                     air_humidity)
-                        VALUES(%s,%s,%s,%s,%s,%s,%s) 
+                        VALUES(%s,%s,%s,%s,%s,%s,%s,%s) 
                         RETURNING id;"""
 
             # create a cursor
             cur = self.conn.cursor()
 
-            cur.execute(sql, (datetime.now(),
+            cur.execute(sql, (acquisition.datetime,
+                              acquisition.acquisition_point,
                               acquisition.EC,
                               acquisition.WF,
                               acquisition.GT,
@@ -77,3 +81,37 @@ class DatabaseAPI:
 
         return acquisitionid
 
+    def get_acquisitions(self):
+        try:
+            cur = self.conn.cursor()
+            cur.execute("SELECT id, "
+                        "datetime, "
+                        "ec, "
+                        "water_flow, "
+                        "ground_temperature, "
+                        "ground_humidity, "
+                        "air_temperature, "
+                        "air_humidity, "
+                        "acquisition_point "
+                        "FROM public.acquisition;")
+            print("The number of rows: ", cur.rowcount)
+            row = cur.fetchone()
+
+            while row is not None:
+                #print(row)
+                acquisition = Acquisition(row[0], row[1], row[8], row[2], row[3], row[4], row[5], row[6], row[7])
+                aJSON = jsonpickle.encode(acquisition, unpicklable=False)
+                print(aJSON)
+                #aJSONData = json.dumps(aJSON)
+                #print(aJSONData)
+                row = cur.fetchone()
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+
+
+if __name__ == '__main__':
+    db = DatabaseAPI()
+    db.connect()
+    db.get_acquisitions()
+    db.closeconnection()

@@ -33,8 +33,9 @@ class Bridge:
                         self.inbuffer = []
                     else:
                         secondlastchar = lastchar
-        except:
+        except Exception as e:
             print("An exception occurred")
+            print(e)
             self.db.closeconnection()
 
     def usedata(self):
