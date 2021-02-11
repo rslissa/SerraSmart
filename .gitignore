@@ -4,5 +4,6 @@ bridge/venv/
 bridge/microcontroller/__pycache__/*
 bridge/database/__pycache__/*
 bridge/tools/__pycache__/*
+bridge/MQTT/__pycache__/
 bridge/model/__pycache__/*
 server/communication/__pycache__/*

@@ -75,4 +75,4 @@ class Caster:
                    (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.AHmin
         else:
             _AH = None
-        return Acquisition(datetime.now(), ACQUISITION_POINT, _EC, _WF, _GT, _GH, _AT, _AH)
+        return Acquisition(None, datetime.now(), ACQUISITION_POINT, _EC, _WF, _GT, _GH, _AT, _AH)

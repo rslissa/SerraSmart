@@ -1,7 +1,5 @@
 #!/usr/bin/python
-import json
-
-import jsonpickle
+from datetime import datetime
 import psycopg2
 from database.configuration import config
 from model.acquisition import Acquisition
@@ -81,31 +79,31 @@ class DatabaseAPI:
 
         return acquisitionid
 
-    def get_acquisitions(self):
+    def get_acquisitions(self, dt):
         try:
             cur = self.conn.cursor()
-            cur.execute("SELECT id, "
-                        "datetime, "
-                        "ec, "
-                        "water_flow, "
-                        "ground_temperature, "
-                        "ground_humidity, "
-                        "air_temperature, "
-                        "air_humidity, "
-                        "acquisition_point "
-                        "FROM public.acquisition;")
+            sql = "SELECT acquisition.id, datetime, ec, water_flow, ground_temperature, ground_humidity, " \
+                  "air_temperature, air_humidity, acquisition_point FROM public.acquisition "
+
+            if dt is None or not isinstance(dt, datetime):
+                whereclause = "WHERE 1=1;"
+            else:
+                if isinstance(dt, datetime):
+                    whereclause = "WHERE acquisition.datetime >= '%s';" % dt
+
+            cur.execute(sql + whereclause)
             print("The number of rows: ", cur.rowcount)
             row = cur.fetchone()
 
+            acquisitions = []
             while row is not None:
                 #print(row)
                 acquisition = Acquisition(row[0], row[1], row[8], row[2], row[3], row[4], row[5], row[6], row[7])
-                aJSON = jsonpickle.encode(acquisition, unpicklable=False)
-                print(aJSON)
-                #aJSONData = json.dumps(aJSON)
-                #print(aJSONData)
+                acquisitions.append(acquisition)
                 row = cur.fetchone()
             cur.close()
+            print(acquisitions)
+            return acquisitions
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
@@ -113,5 +111,5 @@ class DatabaseAPI:
 if __name__ == '__main__':
     db = DatabaseAPI()
     db.connect()
-    db.get_acquisitions()
+    db.get_acquisitions(datetime.now())
     db.closeconnection()
