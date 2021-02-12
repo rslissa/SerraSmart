@@ -1,32 +1,8 @@
 from datetime import datetime
 
 from model.acquisition import Acquisition
-
-ACQUISITION_POINT = "1"
-
-
-class Thresholds:
-    # Arduino analog pin range 0-1023
-    analogMax = 1023
-    analogMin = 0
-    # EC range 0-2000us/cm
-    ECmax = 2000
-    ECmin = 0
-    # Water flow 0.3-6L/min
-    WFmax = 6
-    WFmin = 0.3
-    # Ground temperature range -55-125°C
-    GTmax = 125
-    GTmin = -55
-    # Ground humidity range 0-100%
-    GHmax = 100
-    GHmin = 0
-    # Air temperature range -40-80°C
-    ATmax = 80
-    ATmin = -40
-    # Air humidity range 0-100%
-    AHmax = 100
-    AHmin = 0
+from tools.staticvar import ANALOG_MIN, ACQUISITION_POINT, AH_MAX, ANALOG_MAX, AH_MIN, AT_MIN, AT_MAX, GH_MIN, GH_MAX, \
+    GT_MIN, GT_MAX, WF_MIN, WF_MAX, EC_MIN, EC_MAX
 
 
 class Caster:
@@ -46,33 +22,27 @@ class Caster:
 
     def casting(self):
         if self.s0 is not None:
-            _EC = (((self.s0 - Thresholds.analogMin) * (Thresholds.ECmax - Thresholds.ECmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.ECmin
+            _EC = (((self.s0 - ANALOG_MIN) * (EC_MAX - EC_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + EC_MIN
         else:
             _EC = None
         if self.s1 is not None:
-            _WF = (((self.s1 - Thresholds.analogMin) * (Thresholds.WFmax - Thresholds.WFmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.WFmin
+            _WF = (((self.s1 - ANALOG_MIN) * (WF_MAX - WF_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + WF_MIN
         else:
             _WF = None
         if self.s2 is not None:
-            _GT = (((self.s2 - Thresholds.analogMin) * (Thresholds.GTmax - Thresholds.GTmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.GTmin
+            _GT = (((self.s2 - ANALOG_MIN) * (GT_MAX - GT_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + GT_MIN
         else:
             _GT = None
         if self.s3 is not None:
-            _GH = (((self.s3 - Thresholds.analogMin) * (Thresholds.GHmax - Thresholds.GHmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.GHmin
+            _GH = (((self.s3 - ANALOG_MIN) * (GH_MAX - GH_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + GH_MIN
         else:
             _GH = None
         if self.s4 is not None:
-            _AT = (((self.s4 - Thresholds.analogMin) * (Thresholds.ATmax - Thresholds.ATmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.ATmin
+            _AT = (((self.s4 - ANALOG_MIN) * (AT_MAX - AT_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + AT_MIN
         else:
             _AT = None
         if self.s5 is not None:
-            _AH = (((self.s5 - Thresholds.analogMin) * (Thresholds.AHmax - Thresholds.AHmin)) /
-                   (Thresholds.analogMax - Thresholds.analogMin)) + Thresholds.AHmin
+            _AH = (((self.s5 - ANALOG_MIN) * (AH_MAX - AH_MIN)) / (ANALOG_MAX - ANALOG_MIN)) + AH_MIN
         else:
             _AH = None
         return Acquisition(None, datetime.now(), ACQUISITION_POINT, _EC, _WF, _GT, _GH, _AT, _AH)
