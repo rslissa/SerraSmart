@@ -2,22 +2,24 @@
  * 
   define the number of sensors to read, the system automatically assumes that pin A0 corresponds to the first sensor, pin A1 to the second and so on
  */
-const uint8_t sensorsNumber = 2;
+const uint8_t sensorsNumber = 6;
 uint16_t sensorValues[sensorsNumber];
 uint16_t sensorPins[sensorsNumber];
-uint16_t lastReading;
+unsigned long time1;
+unsigned long time2;
 
 void setup() {
   Serial.begin(9600);
   for(int i=0;i<sensorsNumber;++i){
     sensorPins[i]=14+i;
   }
-  lastReading = millis();
+  time1 = millis();
 }
 
 void loop() {
-  if(millis()-lastReading > 1000){
-    lastReading = millis();
+  time2 = millis();
+  if(time2-time1 > 2000){
+    time1 = millis();
     for(int i=0;i<sensorsNumber;++i){
       sensorValues[i]=analogRead(sensorPins[i]);
     } 

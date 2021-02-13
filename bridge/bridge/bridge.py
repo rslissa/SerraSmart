@@ -55,8 +55,8 @@ class Bridge:
                     self.inbuffer.append(lastchar)
 
                     if secondlastchar == b'\xff' and lastchar == b'\xfe':  # EOL
-                        print("\nValue received")
-                        print(self.inbuffer)
+                        # print("\nValue received")
+                        # print(self.inbuffer)
                         self.usedata()
                         self.inbuffer = []
                     else:
@@ -75,34 +75,36 @@ class Bridge:
             return False
 
         numval = int.from_bytes(b"".join([self.inbuffer[2], self.inbuffer[3]]), byteorder='big')
+        if numval is not None:
+            sensorvalues = SensorValues()
+            sender = Sender()
+            for i in range(numval):
+                if len(self.inbuffer) >= i * 2 + 5:
+                    val = int.from_bytes(b"".join([self.inbuffer[i * 2 + 4], self.inbuffer[i * 2 + 5]]),
+                                         byteorder='big')
+                    strval = "Sensor %d: %d " % (i, val)
+                    print(strval)
+                    if i == 0:
+                        sensorvalues.s0 = val
+                    if i == 1:
+                        sensorvalues.s1 = val
+                    if i == 2:
+                        sensorvalues.s2 = val
+                    if i == 3:
+                        sensorvalues.s3 = val
+                    if i == 4:
+                        sensorvalues.s4 = val
+                    if i == 5:
+                        sensorvalues.s5 = val
 
-        sensorvalues = SensorValues()
-        sender = Sender()
-        for i in range(numval):
-            val = int.from_bytes(b"".join([self.inbuffer[i * 2 + 4], self.inbuffer[i * 2 + 5]]), byteorder='big')
-            strval = "Sensor %d: %d " % (i, val)
-            print(strval)
-            if i == 0:
-                sensorvalues.s0 = val
-            if i == 1:
-                sensorvalues.s1 = val
-            if i == 2:
-                sensorvalues.s2 = val
-            if i == 3:
-                sensorvalues.s3 = val
-            if i == 4:
-                sensorvalues.s4 = val
-            if i == 5:
-                sensorvalues.s5 = val
-
-        # sensorvalues.tostring()
-        c = Caster(sensorvalues)
-        self.acquisition = c.casting()
-        self.error_control(self.acquisition)
-        self.db.insertacquisition(self.acquisition)
-        acquisitions = self.db.get_acquisitions(self.acquisition.datetime)
-        sender.send(acquisitions)
-        # acquisition.tostring()
+            # sensorvalues.tostring()
+            c = Caster(sensorvalues)
+            self.acquisition = c.casting()
+            self.error_control(self.acquisition)
+            self.db.insertacquisition(self.acquisition)
+            acquisitions = self.db.get_acquisitions(self.acquisition.datetime)
+            sender.send(acquisitions)
+            # acquisition.tostring()
 
     def error_control(self, acquisition):
         wrongmeasures = []
@@ -152,7 +154,7 @@ class Bridge:
                 sendBotMessage(self.tupdater, error_msg)
             else:
                 if isinstance(self.start_error, datetime):
-                    lastNotification = self.acquisition.datetime - self.start_error
+                    lastNotification = acquisition.datetime - self.start_error
                     if lastNotification.total_seconds() > NOTIFICATION_ERROR_DELAY:
                         self.start_error = acquisition.datetime
                         error_msg = error_msg_generator(wrongmeasures, acquisition.acquisition_point,
@@ -161,8 +163,7 @@ class Bridge:
         else:
             self.start_error = None
 
-
-        if len(unusualmeasures_key) > 0:
+        if len(unusualmeasures_key) > 0 and len(unusualmeasures_value) > 0:
             if self.start_advise is None:
                 self.start_advise = acquisition.datetime
                 advise_msg = advise_msg_generator(unusualmeasures_key, unusualmeasures_value,
@@ -170,7 +171,7 @@ class Bridge:
                 sendBotMessage(self.tupdater, advise_msg)
             else:
                 if isinstance(self.start_advise, datetime):
-                    lastNotification = self.acquisition.datetime - self.start_advise
+                    lastNotification = acquisition.datetime - self.start_advise
                     if lastNotification.total_seconds() > NOTIFICATION_ADVISE_DELAY:
                         self.start_advise = acquisition.datetime
                         advise_msg = advise_msg_generator(unusualmeasures_key, unusualmeasures_value,
@@ -179,6 +180,7 @@ class Bridge:
                         sendBotMessage(self.tupdater, advise_msg)
         else:
             self.start_advise = None
+
 
 def advise_msg_generator(unusualmeasures_key, unusualmeasures_value, acquisition_point, datetime):
     advise_msg = "----------------------------------------------------------------\n"
@@ -198,9 +200,9 @@ def advise_msg_generator(unusualmeasures_key, unusualmeasures_value, acquisition
         if unusualmeasure == "GT":
             advise_msg += "Temperatura del Terreno | " + str(unusualmeasures_value[unusualmeasure]) + " °C \n"
         if unusualmeasure == "GH":
-            advise_msg += "Umidità del Terreno | " + str(unusualmeasures_value[unusualmeasure]) + " % \n"
+            advise_msg += "Umidità del Terreno     | " + str(unusualmeasures_value[unusualmeasure]) + " % \n"
         if unusualmeasure == "AT":
-            advise_msg += "Temperatura dell'Aria | " + str(unusualmeasures_value[unusualmeasure]) + " °C \n"
+            advise_msg += "Temperatura dell'Aria   | " + str(unusualmeasures_value[unusualmeasure]) + " °C \n"
         if unusualmeasure == "AH":
             advise_msg += "Umidità dell'Aria | " + str(unusualmeasures_value[unusualmeasure]) + " % \n"
     advise_msg += "----------------------------------------------------------------\n"
@@ -237,4 +239,10 @@ def error_msg_generator(wrongmeasures, acquisition_point, datetime):
 
 
 def sendBotMessage(tupdater, msg):
-    tupdater.bot.send_message(chat_id=chatID, text=msg)
+    if tupdater is not None and msg is not None:
+        tupdater.bot.send_message(chat_id=chatID, text=msg)
+    else:
+        if tupdater is None:
+            print("tupdater is none")
+        if msg is None:
+            print("msg is none")

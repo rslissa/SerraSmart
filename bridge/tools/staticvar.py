@@ -1,9 +1,11 @@
+PROJECT_PATH = "C:\\Users\\rslis\\OneDrive\\Documenti\\progetti\\SerraSmart\\bridge\\"
+
 ACQUISITION_POINT = "A01"
 
 SERIAL_PORTNAME = 'COM3'
 
-NOTIFICATION_ERROR_DELAY = 10  # seconds
-NOTIFICATION_ADVISE_DELAY = 10  # seconds
+NOTIFICATION_ERROR_DELAY = 30  # seconds
+NOTIFICATION_ADVISE_DELAY = 30  # seconds
 
 # Arduino analog pin range 0-1023
 ANALOG_MIN = 0
