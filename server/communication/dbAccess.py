@@ -1,7 +1,7 @@
 import psycopg2
 import psycopg2.extras
 from configparser import ConfigParser
-
+from datetime import datetime
 
 class DBconnection:
     def __init__(self):
@@ -50,19 +50,20 @@ class DBconnection:
         acquisitionid = None
         try:
             self.get_connection()
-            sql = "INSERT INTO public.acquisition (datetime, ec, water_flow, ground_temperature, ground_humidity," \
-                  "air_temperature, air_humidity) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;"
+            sql = "INSERT INTO public.acquisition (id, datetime, ec, water_flow, ground_temperature, ground_humidity," \
+                  "air_temperature, air_humidity, acquisition_point) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
 
             cur = self.conn.cursor()
 
             cur.execute(sql, (acquisition['id'],
                               acquisition['datetime'],
-                              acquisition['ec'],
-                              acquisition['water_flow'],
-                              acquisition['ground_temperature'],
-                              acquisition['ground_humidity'],
-                              acquisition['air_temperature'],
-                              acquisition['air_humidity'],))
+                              acquisition['EC'],
+                              acquisition['WF'],
+                              acquisition['GT'],
+                              acquisition['GH'],
+                              acquisition['AT'],
+                              acquisition['AH'],
+                              acquisition['acquisition_point']))
 
             acquisitionid = cur.fetchone()[0]
 
@@ -97,7 +98,10 @@ class DBconnection:
 
         return acquired
 
-
+if __name__ == '__main__':
+    c = DBconnection()
+    c.get_connection()
+    c.close_connection()
 
 
 
