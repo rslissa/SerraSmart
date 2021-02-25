@@ -2,9 +2,11 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.subscribe as subscribe
 import main
 
+
 broker = 'broker.mqttdashboard.com'
+#broker = "broker.emqx.io"
 port = 1883
-topic = "prst/test/fromweb1"
+topic = "IOTProject"
 client_id = "Pasquale-receiver"
 
 

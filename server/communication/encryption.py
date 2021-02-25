@@ -26,19 +26,19 @@ class Encryption:
 
         return res
 
-'''
+
 if __name__ == '__main__':
     from datetime import datetime
     msg = {
         "message": {
-            "id": 220,
+            "id": 525,
             "datetime": str(datetime.now()),
             "acquisition_point": "A01",
-            "EC": 742.923000977200,
-            "WF": 4.78589726070381,
-            "GT": 742.923000977200,
-            "GH": None,
-            "AT": 742.923000977200,
+            "EC": 5000.0,
+            "WF": 2.2,
+            "GT": None,
+            "GH": 70.0,
+            "AT": None,
             "AH": None
         }
     }

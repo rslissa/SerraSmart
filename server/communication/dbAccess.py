@@ -1,7 +1,9 @@
 import psycopg2
 import psycopg2.extras
 from configparser import ConfigParser
-from datetime import datetime
+from communication.Utils import Formatter
+
+util = Formatter()
 
 class DBconnection:
     def __init__(self):
@@ -79,6 +81,7 @@ class DBconnection:
 
     def retrieve_acquisition(self):
         acquired = None
+        casted = None
         try:
             sql = "SELECT * FROM public.acquisition ORDER BY id DESC limit 1;"
             self.get_connection()
@@ -90,18 +93,21 @@ class DBconnection:
             acquired = cur.fetchone()
             #print('Acquired:\n', acquired)
 
+            casted = util.message_formatting(acquired)
+
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         finally:
             if self.conn is not None:
                 self.close_connection()
 
-        return acquired
+        return casted
 
-if __name__ == '__main__':
+
+'''if __name__ == '__main__':
     c = DBconnection()
     c.get_connection()
-    c.close_connection()
+    c.close_connection()'''
 
 
 

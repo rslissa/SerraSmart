@@ -2,9 +2,9 @@ from marshmallow import Schema, fields, ValidationError
 
 
 class InsideSchema(Schema):
-    id = fields.Integer(required=True, validate=lambda x: x > 0)
-    datetime = fields.Str(required=True)
-    acquisition_point = fields.Str(required=True, validate=lambda x: len(x) == 3)
+    id = fields.Integer(required=True, allow_none=False, validate=lambda x: x > 0)
+    datetime = fields.Str(required=True, allow_none=False)
+    acquisition_point = fields.Str(required=True, allow_none=False, validate=lambda x: len(x) == 3)
     EC = fields.Float(required=True, allow_none=True)
     WF = fields.Float(required=True, allow_none=True)
     GT = fields.Float(required=True, allow_none=True)
