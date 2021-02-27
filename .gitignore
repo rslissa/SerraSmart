@@ -2,3 +2,4 @@ bridge/.idea/
 server/.idea/
 bridge/venv/
 */*/__pycache__/*
+*/__pycache__/

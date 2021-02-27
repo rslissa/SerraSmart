@@ -1,9 +1,6 @@
-import json
-
 import jsonpickle
-
+from MQTT.encryption import Encryption
 from model.message import Message
-from MQTT.integrity import Integrity
 from MQTT.mqttClient import MQTTClient
 
 
@@ -11,7 +8,7 @@ class Sender:
     def __init__(self):
         self.acquisitions = None
         self.client = None
-        self.integrity = None
+        self.encryption = None
 
     def JSONConverter(self, msg):
         aJSON = jsonpickle.encode(msg, unpicklable=False)
@@ -23,11 +20,11 @@ class Sender:
         if self.client is None:
             self.client = MQTTClient()
             self.client.connect_mqtt()
-        if self.integrity is None:
-            self.integrity = Integrity()
+        if self.encryption is None:
+            self.encryption = Encryption()
 
         for acquisition in acquisitions:
-            message = Message(self.integrity.get_digest(acquisition), acquisition)
+            message = Message(acquisition)
             jsonMessage = self.JSONConverter(message)
-            self.client.publish(jsonMessage)
+            self.client.publish(self.encryption.encrypt(jsonMessage))
 

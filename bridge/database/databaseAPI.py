@@ -135,7 +135,6 @@ class DatabaseAPI:
                     whereclause = "WHERE acquisition.datetime >= '%s';" % dt
 
             cur.execute(sql + whereclause)
-            print("The number of rows: ", cur.rowcount)
             row = cur.fetchone()
 
             acquisitions = []

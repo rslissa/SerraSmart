@@ -1,0 +1,14 @@
+{
+    "PROJECT_PATH" : "C:\\Users\\rslis\\OneDrive\\Documenti\\progetti\\SerraSmart\\bridge\\",
+    "ACQUISITION_POINT" : "A01",
+    "SERIAL_PORTNAME" : "COM3",
+    "_comment" : "delays are measured in seconds",
+    "NOTIFICATION_ERROR_DELAY" : 600, 
+    "NOTIFICATION_ADVISE_DELAY" : 600,  
+    "_comment2" : "id_rosario,id_pascuale",
+    "TELEGRAM_USERS":["462522975","190224808"],
+    "MQTT_BROKER" : "broker.emqx.io",
+    "MQTT_PORT" : 1883,
+    "MQTT_TOPIC" : "IOTProject",
+    "MQTT_CLIENT_ID" : "clientId-6L48NQ9LjJ"
+  }

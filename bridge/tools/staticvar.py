@@ -1,11 +1,65 @@
-PROJECT_PATH = "C:\\Users\\rslis\\OneDrive\\Documenti\\progetti\\SerraSmart\\bridge\\"
+import json
 
-ACQUISITION_POINT = "A01"
+PROJECT_PATH = None
+ACQUISITION_POINT = None
+SERIAL_PORTNAME = None
+NOTIFICATION_ERROR_DELAY = None
+NOTIFICATION_ADVISE_DELAY = None
+TELEGRAM_USERS = []
+MQTT_BROKER = None
+MQTT_PORT = None
+MQTT_TOPIC = None
+MQTT_CLIENT_ID = None
 
-SERIAL_PORTNAME = 'COM3'
+# Opening JSON file
+f = open('config.json', )
 
-NOTIFICATION_ERROR_DELAY = 30  # seconds
-NOTIFICATION_ADVISE_DELAY = 30  # seconds
+# returns JSON object as
+# a dictionary
+data = json.load(f)
+try:
+    PROJECT_PATH = str(data["PROJECT_PATH"])
+except:
+    print("field PROJECT_PATH missed or corrupt on config.json file")
+try:
+    ACQUISITION_POINT = str(data["ACQUISITION_POINT"])
+except:
+    print("field ACQUISITION_POINT missed or corrupt on config.json file")
+try:
+    SERIAL_PORTNAME = str(data["SERIAL_PORTNAME"])
+except:
+    print("field SERIAL_PORTNAME missed or corrupt on config.json file")
+try:
+    NOTIFICATION_ERROR_DELAY = int(data["NOTIFICATION_ERROR_DELAY"])
+except:
+    print("field NOTIFICATION_ERROR_DELAY missed or corrupt on config.json file")
+try:
+    NOTIFICATION_ADVISE_DELAY = int(data["NOTIFICATION_ADVISE_DELAY"])
+except:
+    print("field NOTIFICATION_ADVISE_DELAY missed or corrupt on config.json file")
+try:
+    TELEGRAM_USERS = data["TELEGRAM_USERS"]
+except:
+    print("field TELEGRAM_USERS missed or corrupt on config.json file")
+try:
+    MQTT_BROKER = str(data["MQTT_BROKER"])
+except:
+    print("field MQTT_BROKER missed or corrupt on config.json file")
+try:
+    MQTT_PORT = int(data["MQTT_PORT"])
+except:
+    print("field MQTT_PORT missed or corrupt on config.json file")
+try:
+    MQTT_TOPIC = str(data["MQTT_TOPIC"])
+except:
+    print("field MQTT_TOPIC missed or corrupt on config.json file")
+try:
+    MQTT_CLIENT_ID = str(data["MQTT_CLIENT_ID"])
+except:
+    print("field MQTT_CLIENT_ID missed or corrupt on config.json file")
+
+# Closing file
+f.close()
 
 # Arduino analog pin range 0-1023
 ANALOG_MIN = 0
