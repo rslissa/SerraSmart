@@ -1,10 +1,8 @@
 #!/usr/bin/python
 from configparser import ConfigParser
 
-from tools.staticvar import PROJECT_PATH
 
-
-def config(filename=PROJECT_PATH+"database.ini", section="postgresql"):
+def config(filename="database.ini", section="postgresql"):
     # create a parser
     parser = ConfigParser()
     # read config file

@@ -1,0 +1,8 @@
+{
+    "PROJECT_PATH" : "C:\\Users\\rslis\\OneDrive\\Documenti\\progetti\\SerraSmart\\bridge\\",
+    "ACQUISITION_POINT" : "A01",
+    "SERIAL_PORTNAME" : "COM3",
+    "_comment" : "delays are measured in seconds",
+    "NOTIFICATION_ERROR_DELAY" : 30, 
+    "NOTIFICATION_ADVISE_DELAY" : 30  
+  }

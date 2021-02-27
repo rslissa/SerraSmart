@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 
 from database.databaseAPI import DatabaseAPI
 from tools.fileConverter import CSVtoXLSX
-from userinterface.telegramconfig import BOTKEY, chatID
+from userinterface.telegramconfig import BOTKEY
 
 LA = range(1)
 class TelegramBot:
@@ -53,17 +53,12 @@ class TelegramBot:
         for code in acquisition_points:
             update.message.reply_text(code)
 
-    def gender(self, update, context):
-        user = update.message.text
-        print(user)
-
     def get_last_acquisition(self, update, context):
         update.message.reply_text("inserire il punto di raccolta:")
         return LA
 
     def query_last_acquisition(self, update, context):
         user_input = update.message.text
-        print(user_input)
         ap_number = self.db.get_number_acquisition_points(user_input)
         if ap_number is not None:
             if ap_number == 0:

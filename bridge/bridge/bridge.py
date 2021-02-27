@@ -1,6 +1,9 @@
 from datetime import datetime
-import serial
+
 import threading
+
+import serial
+
 from MQTT.sender import Sender
 from database.databaseAPI import DatabaseAPI
 from model.acquisition import SensorValues
@@ -9,9 +12,8 @@ from tools.staticvar import SERIAL_PORTNAME, NOTIFICATION_ERROR_DELAY, EC_ERROR_
     AT_ERROR_MIN, GH_ERROR_MIN, GT_ERROR_MIN, WF_ERROR_MIN, WF_ERROR_MAX, GT_ERROR_MAX, GH_ERROR_MAX, AT_ERROR_MAX, \
     AH_ERROR_MAX, EC_THRESHOLD_MIN, EC_THRESHOLD_MAX, WF_THRESHOLD_MIN, WF_THRESHOLD_MAX, GT_THRESHOLD_MIN, \
     GT_THRESHOLD_MAX, GH_THRESHOLD_MIN, GH_THRESHOLD_MAX, AT_THRESHOLD_MIN, AT_THRESHOLD_MAX, AH_THRESHOLD_MIN, \
-    AH_THRESHOLD_MAX, NOTIFICATION_ADVISE_DELAY
+    AH_THRESHOLD_MAX, NOTIFICATION_ADVISE_DELAY, TELEGRAM_USERS
 from userinterface.telegrambot import TelegramBot
-from userinterface.telegramconfig import chatID
 
 
 class Bridge:
@@ -240,7 +242,8 @@ def error_msg_generator(wrongmeasures, acquisition_point, datetime):
 
 def sendBotMessage(tupdater, msg):
     if tupdater is not None and msg is not None:
-        tupdater.bot.send_message(chat_id=chatID, text=msg)
+        for chatID in TELEGRAM_USERS:
+            tupdater.bot.send_message(chat_id=chatID, text=msg)
     else:
         if tupdater is None:
             print("tupdater is none")

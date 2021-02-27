@@ -18,7 +18,7 @@ void setup() {
 
 void loop() {
   time2 = millis();
-  if(time2-time1 > 2000){
+  if(time2-time1 > 10000){
     time1 = millis();
     for(int i=0;i<sensorsNumber;++i){
       sensorValues[i]=analogRead(sensorPins[i]);

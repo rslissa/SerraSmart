@@ -1,4 +1,3 @@
 class Message:
-    def __init__(self, digest, message):
-        self.digest = digest
+    def __init__(self, message):
         self.message = message
