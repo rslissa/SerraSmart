@@ -2,3 +2,9 @@ psycopg2
 paho-mqtt
 pycryptodome
 marshmallow
+pandas
+pystan
+fbprophet
+requests
+
+

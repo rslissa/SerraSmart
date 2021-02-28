@@ -1,24 +1,35 @@
+import threading
 import communication.mqttClient as to_client
+from FbProphet.prevision import Previson
+
+util_prevision = Previson()
+
+'''import communication.mqttClient as to_client
 import communication.validation as validate
 import communication.encryption as decipher
 import communication.dbAccess as db
 import thingsBoard.dbThingsBoard as to_dash
+import threading
+from FbProphet.prevision import Previson
 
 util_decrypt = decipher.Encryption()
 util_db = db.DBconnection()
 util_dash = to_dash.Dashboard()
+util_prevision = Previson()
+
 
 def processing_message(msg):
-    '''
-    Ricezione del messaggio:
-        - controllo se None
-        - decifrazione (testo cifrato -> testo in chiaro)
-        - validazione (testo in chiaro -> json)
-    '''
+    
+    #Ricezione del messaggio:
+    #    - controllo se None
+    #   - decifrazione (testo cifrato -> testo in chiaro)
+    #   - validazione (testo in chiaro -> json)
+    
 
     if msg is None:
         return print('Message empty, not processed!')
-
+    else:
+        print('Received:\n', msg)
 
     plaintext = util_decrypt.decrypt(msg)
     if plaintext is None:
@@ -49,7 +60,7 @@ def processing_message(msg):
         print('Retrieving from db failed!')
 
     return
-
+'''
 
 if __name__ == '__main__':
     '''
@@ -88,4 +99,15 @@ if __name__ == '__main__':
     #client.loop_forever()
 
     #Avvio del codice di ricezione dei messaggi senza bisogno dell'istanza client in questo punto
-    to_client.run()
+    #to_client.run()
+
+    try:
+        t1 = threading.Thread(target=to_client.run())
+        t2 = threading.Thread(target=util_prevision.prevision_flow())
+        t1.start()
+        t1.join()
+        t2.start()
+        t2.join()
+    except:
+        print('Error on starting!')
+

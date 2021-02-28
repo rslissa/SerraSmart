@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, ValidationError
 
 
 class InsideSchema(Schema):
-    id = fields.Integer(required=True, allow_none=False, validate=lambda x: x > 0)
+    id = fields.Integer(required=True, allow_none=False, validate=lambda x: x >= 0)
     datetime = fields.Str(required=True, allow_none=False)
     acquisition_point = fields.Str(required=True, allow_none=False, validate=lambda x: len(x) == 3)
     EC = fields.Float(required=True, allow_none=True)
@@ -41,5 +41,6 @@ if __name__ == '__main__':
         }
     }
 
-    print(validBody(json)['message']['id'])
+    print(validBody(json))
 '''
+

@@ -3,7 +3,6 @@ from Crypto.Util.Padding import pad, unpad
 import ast
 import sys
 
-
 class Encryption:
     def __init__(self):
         with open('cipher_file', 'rb') as c_file:
@@ -31,15 +30,15 @@ if __name__ == '__main__':
     from datetime import datetime
     msg = {
         "message": {
-            "id": 525,
+            "id": 10000,
             "datetime": str(datetime.now()),
             "acquisition_point": "A01",
-            "EC": 5000.0,
-            "WF": 2.2,
-            "GT": None,
-            "GH": 70.0,
+            "EC": None,
+            "WF": 55.2,
+            "GT": 11.1,
+            "GH": 80.0,
             "AT": None,
-            "AH": None
+            "AH": 50.0
         }
     }
     print('Testo di input', msg)

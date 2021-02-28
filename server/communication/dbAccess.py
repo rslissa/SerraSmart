@@ -103,6 +103,32 @@ class DBconnection:
 
         return casted
 
+    def export_csv(self, acquisition_point, parameter):
+        path1 = "C:\\Users\\Pc_User\\Desktop\\ProgettoSerraSmart\\SerraSmart\\server\\FbProphet\\data.csv"
+        path2 = "C:\\Users\\Pc_User\\Desktop\\ProgettoSerraSmart\\SerraSmart\\server\\data.csv"
+        try:
+            #risolvere il problema dell'uguaglianza per l'acquisition point
+            sql = f"SELECT datetime,{parameter} FROM public.acquisition WHERE {parameter} IS NOT NULL AND acquisition_point='{acquisition_point}'"
+
+            self.get_connection()
+            cur = self.conn.cursor()
+
+            SQL_for_file_output = "COPY ({0}) TO STDOUT WITH CSV HEADER".format(sql)
+
+            with open(path1, 'w') as f_output:
+                cur.copy_expert(SQL_for_file_output, f_output)
+
+            with open(path2, 'w') as f_output:
+                cur.copy_expert(SQL_for_file_output, f_output)
+
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if self.conn is not None:
+                self.close_connection()
+
+        return
+
 
 '''if __name__ == '__main__':
     c = DBconnection()

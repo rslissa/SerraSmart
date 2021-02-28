@@ -1,13 +1,12 @@
 import paho.mqtt.client as mqtt
 import paho.mqtt.subscribe as subscribe
-import main
+import config
+import processing
 
-
-broker = 'broker.mqttdashboard.com'
-#broker = "broker.emqx.io"
-port = 1883
-topic = "IOTProject"
-client_id = "Pasquale-receiver"
+broker = config.BROKER
+port = config.PORT
+topic = config.TOPIC
+client_id = config.client_id
 
 
 def connect_mqtt() -> mqtt:
@@ -25,7 +24,8 @@ def connect_mqtt() -> mqtt:
 
 def subscribe(client: mqtt):
     def on_message(client, userdata, msg):
-        main.processing_message(msg.payload.decode())
+        #util_flusso.processing_message(msg.payload.decode())
+        processing.processing_message(msg.payload.decode())
 
     client.subscribe(topic)
     client.on_message = on_message
@@ -34,7 +34,8 @@ def subscribe(client: mqtt):
 def run():
     client = connect_mqtt()
     subscribe(client)
-    client.loop_forever()
+    client.loop_start()
+
 
 #
 #
