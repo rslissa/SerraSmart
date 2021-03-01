@@ -2,6 +2,7 @@ from requests import post
 from communication import validation
 import config
 
+
 class Dashboard:
     def __init__(self):
         self.HOST_NAME = config.localhost
@@ -24,9 +25,10 @@ class Dashboard:
             print('Db acquisition not valid!')
             return
 
-        r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=ret['message'])
-        if r is None:
-            print('POST error!')
+        try:
+            r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=ret['message'])
+        except:
+            print('Acquisition POST error!')
             return
 
         print('Acquisition uploaded to Dashboard!')
@@ -44,53 +46,55 @@ class Dashboard:
         parameter = None
         forecast = None
 
-        #Siccome voglio caricare le previsioni per data, allora prendo prima l'array di date
-        dates = []
-        for i in range(config.PERIODS):
-            dates.append(str(forecast_list[0]['dates']['ds'].values[i]))
+        try:
+            # Siccome voglio caricare le previsioni per data, allora prendo prima l'array di date
+            dates = []
+            for i in range(config.PERIODS):
+                dates.append(str(forecast_list[0]['dates']['ds'].values[i]))
 
-        i = 0
-        for date in dates:
-            for item in forecast_list:
-                if i > 7:
-                    break
-                acquisition_point = item['acquisition_point']
-                parameter = item['parameter']
-                forecast = item['forecast'] #contiene le previsioni per i 7 giorni successivi
-                prevision = round(forecast['yhat'].head(i + 1).values[i], 2)
+            i = 0
+            for date in dates:
+                for item in forecast_list:
+                    if i > config.PERIODS:
+                        break
+                    acquisition_point = item['acquisition_point']
+                    parameter = item['parameter']
+                    forecast = item['forecast']  # contiene le previsioni per i 7 giorni successivi
+                    prevision = round(forecast['yhat'].head(i + 1).values[i], 2)
 
-                if parameter == 'ec':
-                    self.ec = prevision
-                elif parameter == 'water_flow':
-                    self.wf = prevision
-                elif parameter == 'ground_temperature':
-                    self.gt = prevision
-                elif parameter == 'ground_humidity':
-                    self.gh = prevision
-                elif parameter == 'air_temperature':
-                    self.at = prevision
-                elif parameter == 'air_humidity':
-                    self.ah = prevision
-            #print('parametri alla data ', date, self.ec, self.wf, self.gt, self.gh, self.at, self.ah)
-            i += 1
+                    if parameter == 'ec':
+                        self.ec = prevision
+                    elif parameter == 'water_flow':
+                        self.wf = prevision
+                    elif parameter == 'ground_temperature':
+                        self.gt = prevision
+                    elif parameter == 'ground_humidity':
+                        self.gh = prevision
+                    elif parameter == 'air_temperature':
+                        self.at = prevision
+                    elif parameter == 'air_humidity':
+                        self.ah = prevision
+                # print('parametri alla data ', date, self.ec, self.wf, self.gt, self.gh, self.at, self.ah)
+                i += 1
 
-            #Costruisco l'item e lo carico sulla dashboard
-            item = {
-                'Datetime': str(date),
-                'Acquisition_Point': acquisition_point,
-                'ec': self.ec,
-                'water_flow': self.wf,
-                'ground_temperature': self.gt,
-                'ground_humidity': self.gh,
-                'air_temperature': self.at,
-                'air_humidity': self.ah
-            }
+                # Costruisco l'item e lo carico sulla dashboard
+                item = {
+                    'Datetime': str(date),
+                    'Acquisition_Point': acquisition_point,
+                    'ec': self.ec,
+                    'water_flow': self.wf,
+                    'ground_temperature': self.gt,
+                    'ground_humidity': self.gh,
+                    'air_temperature': self.at,
+                    'air_humidity': self.ah
+                }
 
-            r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
-            if r is None:
-                print('Error in posting previsions!', r.status_code)
+                r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
+        except:
+            print('Problem in forecasting and upload provisions!')
+            return
 
-        print('Previsions uploaded to Dashboard!')
+        print('Provisions uploaded to Dashboard!')
         return
 
     #Funzioni per postare una previsione alla volta
@@ -104,13 +108,14 @@ class Dashboard:
                 parameter: round(forecast['yhat'][num_tot - 7 + i], 2),
                 'Acquisition_Point': acquisition_point
             }
-            #print(item, '\n')
-            r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
-            if r is None:
-                print('Error in posting prevision!')
+
+            try:
+                r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
+            except:
+                print('Error in posting provision!')
                 return
 
-        print('Prevision uploaded to Dashboard!')
+        print('Provision uploaded to Dashboard!')
         return
 
     def post_roof(self, roof):
@@ -118,8 +123,9 @@ class Dashboard:
             item = {
                 'roof': roof
             }
-            r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
-            if r is None:
+            try:
+                r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
+            except:
                 print('Error on actuate roof!')
                 return
 
@@ -130,8 +136,9 @@ class Dashboard:
             item = {
                 'irrigation': irrigation
             }
-            r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
-            if r is None:
+            try:
+                r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
+            except:
                 print('Error on actuate irrigation!')
                 return
 
@@ -143,10 +150,15 @@ class Dashboard:
                 'roof': roof,
                 'irrigation': irrigation
             }
-            r = None
             try:
                 r = post(f"{self.HOST_NAME}/api/v1/{self.TOKEN}/telemetry", json=item)
             except:
-                return r.status_code
+                return 'Request to upload roof and irrigation to dashboard not satisfied!'
 
-        return
+        return 'Dashboard uploaded with roof and irrigation!'
+
+'''
+if __name__ == '__main__':
+    d = Dashboard()
+    print(d.post_roof_and_irrigation(25, 33))
+'''

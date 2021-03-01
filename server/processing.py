@@ -17,17 +17,17 @@ def processing_message(msg):
     #   - validazione (testo in chiaro -> json)
 
     if msg is None:
-        return print('Message empty, not processed!')
+        return 'Message empty, not processed!'
     else:
         print('Received:\n', msg)
 
     plaintext = util_decrypt.decrypt(msg)
     if plaintext is None:
-        print('Bad message decription phase!')
+        return 'Bad message decription phase!'
 
     json = validate.validBody(plaintext)
     if json is None:
-        return print('Format message error')
+        return 'Format message error'
     else:
         print('Correct format message')
 
@@ -36,7 +36,7 @@ def processing_message(msg):
     # Caricamento del messaggio sul db
     ret = util_db.insert_acquisition(json['message'])
     if ret is None:
-        print('Upload db error!')
+        return 'Upload db error!'
     else:
         print('Message correctly uploaded to db')
 
@@ -46,6 +46,6 @@ def processing_message(msg):
         # Caricamento messaggio su Dashboard
         util_dash.post_acquisition(acq)
     else:
-        print('Retrieving from db failed!')
+        return 'Retrieving from db failed!'
 
     return

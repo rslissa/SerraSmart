@@ -2,13 +2,16 @@ import psycopg2
 import psycopg2.extras
 from configparser import ConfigParser
 from communication.Utils import Formatter
+import config
 
 util = Formatter()
+
 
 class DBconnection:
     def __init__(self):
         self.conn = None
         self.cur = None
+        self.get_connection()
 
     def config(self, filename='database.ini', section='postgresql'):
         # create a parser
@@ -51,7 +54,7 @@ class DBconnection:
     def insert_acquisition(self, acquisition):
         acquisitionid = None
         try:
-            self.get_connection()
+            #self.get_connection()
             sql = "INSERT INTO public.acquisition (id, datetime, ec, water_flow, ground_temperature, ground_humidity," \
                   "air_temperature, air_humidity, acquisition_point) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
 
@@ -73,9 +76,9 @@ class DBconnection:
             cur.close()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
+        '''finally:
             if self.conn is not None:
-                self.close_connection()
+                self.close_connection()'''
 
         return acquisitionid
 
@@ -84,7 +87,7 @@ class DBconnection:
         casted = None
         try:
             sql = "SELECT * FROM public.acquisition ORDER BY id DESC limit 1;"
-            self.get_connection()
+            #self.get_connection()
 
             cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -97,20 +100,19 @@ class DBconnection:
 
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
+        '''finally:
             if self.conn is not None:
-                self.close_connection()
+                self.close_connection()'''
 
         return casted
 
     def export_csv(self, acquisition_point, parameter):
-        path1 = "C:\\Users\\Pc_User\\Desktop\\ProgettoSerraSmart\\SerraSmart\\server\\FbProphet\\data.csv"
-        path2 = "C:\\Users\\Pc_User\\Desktop\\ProgettoSerraSmart\\SerraSmart\\server\\data.csv"
+        path1 = config.PATH_1
+        path2 = config.PATH_2
         try:
-            #risolvere il problema dell'uguaglianza per l'acquisition point
             sql = f"SELECT datetime,{parameter} FROM public.acquisition WHERE {parameter} IS NOT NULL AND acquisition_point='{acquisition_point}'"
 
-            self.get_connection()
+            #self.get_connection()
             cur = self.conn.cursor()
 
             SQL_for_file_output = "COPY ({0}) TO STDOUT WITH CSV HEADER".format(sql)
@@ -123,9 +125,10 @@ class DBconnection:
 
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
+            return None
+        '''finally:
             if self.conn is not None:
-                self.close_connection()
+                self.close_connection()'''
 
         return
 

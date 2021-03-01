@@ -30,23 +30,23 @@ class Previson:
 
                             #Faccio la previsione
                             forecast = util_forecast.predict(point, parameter)
+                            if forecast is not None:
+                                # Metto quelle dei 7 giorni successivi in un dict
+                                forecast_step = {
+                                    'acquisition_point': point,
+                                    'parameter': parameter,
+                                    'dates': forecast[['ds']].tail(7),
+                                    'forecast': forecast[['yhat']].tail(7)
+                                }
 
-                            #Metto quelle dei 7 giorni successivi in un dict
-                            forecast_step = {
-                                'acquisition_point': point,
-                                'parameter': parameter,
-                                'dates':    forecast[['ds']].tail(7),
-                                'forecast': forecast[['yhat']].tail(7)
-                            }
-
-                            #Accumulo i dict in una lista
-                            forecast_list.append(forecast_step)
+                                # Accumulo i dict in una lista
+                                forecast_list.append(forecast_step)
 
                             #Per caricare una previsione alla volta
                             #util_dashboard.post_prevision(forecast, parameter, point)
 
                             stop = time.time()  #STOP del ciclo delle previsioni
-                            print(f'CORRECTLY PREVISIONED! {point}, {parameter} in {stop - start}')
+                            print(f'CORRECTLY PROVISIONED! {point}, {parameter} in {stop - start}')
 
                         #Carico la lista delle previsioni
                         util_dashboard.post_previsions(forecast_list)
@@ -59,7 +59,7 @@ class Previson:
                 #else:
                 #    time.sleep(600)
         except:
-            print('Prevision flow unexpected exit!')
+            print('Provision flow unexpected exit!')
 
 '''
 if __name__ == '__main__':

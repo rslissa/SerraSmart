@@ -21,4 +21,4 @@ class Formatter:
             return ret
         else:
             print('Message formatting error, acquisition None!')
-            return
+            return None

@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, ValidationError
+from datetime import datetime
 
 
 class InsideSchema(Schema):
@@ -24,7 +25,6 @@ def validBody(json):
         return None
     return ret
 
-
 '''
 if __name__ == '__main__':
     json = {
@@ -41,6 +41,20 @@ if __name__ == '__main__':
         }
     }
 
-    print(validBody(json))
+    msg = {
+        "message": {
+            "id": 6,
+            "datetime": str(datetime.now()),
+            "acquisition_point": "A01",
+            "EC": 2500,
+            "WF": 55.2,
+            "GT": 11.1,
+            "GH": 80.0,
+            "AT": 789.0,
+            "AH": 50.0
+        }
+    }
+
+    print(validBody(msg))
 '''
 

@@ -11,8 +11,8 @@ HOST_NAME = "http://localhost:9090"
 TOKEN = "i1ZtDfX4pnscmkLXcdEy"
 '''
 
-#Caricamento su dashboard
-'''while True:
+'''#Caricamento su dashboard
+while True:
     item = {
         "id": 0,
         "datetime": str(datetime.now()),
@@ -28,8 +28,8 @@ TOKEN = "i1ZtDfX4pnscmkLXcdEy"
     #POST
     r = post(f"{HOST_NAME}/api/v1/{TOKEN}/telemetry", json=item)
     print(r.text, r.status_code)
-    time.sleep(5)'''
-
+    time.sleep(5)
+'''
 '''
 #Caricamento su db
 id = 115  #ATTENZIONE A SELEZIONARE L'ULTIMO ID CARICATO SUL DB + 1

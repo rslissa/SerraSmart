@@ -16,28 +16,31 @@ class PushAPI:
         if not self.valid(acquisition_point) or not self.valid(roof) or not self.valid(irrigation):
             return None
         else:
-            r = None
             try:
                 r = post(f"{self.HOST}/ap/{acquisition_point}/roof/{roof}/irrigation/{irrigation}")
             except:
-                return r.status_code
+                print('API POST not succeded!')
 
-        return 200
+        return 'ok'
 
     def get_roof_and_irrigation(self, acquisition_point):
+        roof = None
+        irrigation = None
         if not self.valid(acquisition_point):
             return None
         else:
-            r = get(f"{self.HOST}/ap/{acquisition_point}").json()
-            if r is None:
-                return r.status_code
+            try:
+                r = get(f"{self.HOST}/ap/{acquisition_point}").json()
 
-            roof = r[acquisition_point]['roof']
-            irrigation = r[acquisition_point]['irrigation']
+                roof = r[acquisition_point]['roof']
+                irrigation = r[acquisition_point]['irrigation']
+            except:
+                print('API GET not succeded!')
 
         return roof, irrigation
 
 '''
 if __name__ == '__main__':
+    print(PushAPI().post_roof_and_irrigation("A01", 25, 3))
     print(PushAPI().get_roof_and_irrigation("A01"))
 '''

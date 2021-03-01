@@ -35,20 +35,25 @@ class Forecast:
         return m
 
     def predict(self, acquisition_point, parameter):
-        #Faccio l'export degli ultimi dati su data.csv
-        db_util.export_csv(acquisition_point, parameter)
+        forecast = None
+        try:
+            # Faccio l'export degli ultimi dati su data.csv
+            db_util.export_csv(acquisition_point, parameter)
 
-        #Costruisco il modello
-        self.m = self.build_model(parameter)
+            # Costruisco il modello
+            self.m = self.build_model(parameter)
 
-        # Creo il dataframe per contenere le predizioni
-        future = self.m.make_future_dataframe(periods=config.PERIODS)  # periods è in giorni il tempo che vogliamo predire es: 7 -> prediciamo i valori per i 7 giorni consecutivi
+            # Creo il dataframe per contenere le predizioni
+            future = self.m.make_future_dataframe(
+                periods=config.PERIODS)  # periods è in giorni il tempo che vogliamo predire es: 7 -> prediciamo i valori per i 7 giorni consecutivi
 
-        # Calcolo le predizioni
-        forecast = self.m.predict(future)
-        # print('Forecasting\n', forecast)
-        print(forecast[['ds', 'yhat']].tail(7))
-        #print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(1))
+            # Calcolo le predizioni
+            forecast = self.m.predict(future)
+            # print('Forecasting\n', forecast)
+            print(forecast[['ds', 'yhat']].tail(7))
+            # print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(1))
+        except:
+            print('Not possible to forecast!')
 
         return forecast
 

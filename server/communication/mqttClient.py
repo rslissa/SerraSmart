@@ -35,51 +35,6 @@ def run():
     client = connect_mqtt()
     subscribe(client)
     client.loop_start()
+    #client.loop_forever()  #per run senza thread
 
 
-#
-#
-#
-#
-#
-#
-#
-#
-'''
-def on_connect(client, userdata, flags, rc):
-    print("CONNACK received with code %d." % (rc))
-
-
-def on_message(client, userdata, message):
-    #print("Received message '" + str(message.payload) + "' on topic '" + message.topic + "' with QoS " + str(message.qos))
-    #print(message.payload)
-    main.processing_message(message.payload.decode())
-
-
-def on_disconnect(client, userdata, rc):
-    if rc != 0:
-        print("Unexpected disconnection.")
-
-
-def on_subscribe(client, userdata, mid, granted_qos):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
-
-
-def on_log(client, userdata, level, buf):
-    print("Logging message: " + str(level) + " " + str(buf))
-
-
-if __name__ == '__main__':
-
-    client = mqtt.Client(client_id="Pasquale-receiver", clean_session=False, userdata=None, protocol=mqtt.MQTTv311,
-                         transport="tcp")
-    client.connect(host="broker.mqttdashboard.com", port=1883, keepalive=120, bind_address="")
-
-    client.on_connect = on_connect
-    client.on_message = on_message
-
-    client.subscribe(topic="prst/test/fromweb1", qos=0)
-    client.on_subscribe = on_subscribe
-
-    client.loop_forever()
-'''
